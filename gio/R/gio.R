@@ -6,10 +6,22 @@
 #'
 #' @export
 gio <- function(data, width = NULL, height = NULL, elementId = NULL) {
+  # defaults to NULL
+  group <- NULL
+  deps <- NULL
+
+  # uses crosstalk
+  if (crosstalk::is.SharedData(data)) {
+    group <- data$groupName()
+    data <- data$origData()
+    deps <- crosstalk::crosstalkLibs()
+  }
 
   # forward options using x
   x = list(
-    data = data
+    data = data,
+    style = "default",
+    crosstalk = list(group = group) # pass group
   )
 
   # serialise data.frames to wide (not long as default)
@@ -35,7 +47,9 @@ gio <- function(data, width = NULL, height = NULL, elementId = NULL) {
       padding = 0,
       browser.fill = TRUE
     ),
-    preRenderHook = render_gio # pass renderer
+    preRenderHook = render_gio, # pass renderer
+    # add crosstalk dependency
+    dependencies = deps
   )
 }
 

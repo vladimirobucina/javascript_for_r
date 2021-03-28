@@ -9,6 +9,8 @@ HTMLWidgets.widget({
     // TODO: define shared variables for this instance
     var controller;
 
+    var sel_handle = new crosstalk.SelectionHandle();
+
     return {
 
       renderValue: function(x) {
@@ -23,6 +25,17 @@ HTMLWidgets.widget({
 
         if(x.stats)
           controller.enableStats();
+
+        sel_handle.setGroup(x.crosstalk.group)
+
+        sel_handle.on("change", function(e) {
+          // selection comes from another widget
+          if (e.sender !== sel_handle) {
+            // clear the selection
+            // not possible with gio.js
+          }
+          controller.switchCountry(e.value[0]);
+        });
 
         // render
         controller.init();
