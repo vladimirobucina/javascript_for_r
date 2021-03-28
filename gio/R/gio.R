@@ -15,6 +15,13 @@ gio <- function(data, width = NULL, height = NULL, elementId = NULL) {
   # serialise data.frames to wide (not long as default)
   attr(x, 'TOJSON_ARGS') <- list(dataframe = "rows")
 
+  # preRenderHook function
+  render_gio <- function(g){
+    # only keep relevant variables
+    g$x$data <- g$x$data[,c("e", "v", "i")]
+    return(g)
+  }
+
   # create widget
   htmlwidgets::createWidget(
     name = 'gio',
@@ -22,7 +29,13 @@ gio <- function(data, width = NULL, height = NULL, elementId = NULL) {
     width = width,
     height = height,
     package = 'gio',
-    elementId = elementId
+    elementId = elementId,
+    sizingPolicy = htmlwidgets::sizingPolicy(
+      defaultWidth = "100%",
+      padding = 0,
+      browser.fill = TRUE
+    ),
+    preRenderHook = render_gio # pass renderer
   )
 }
 
@@ -60,4 +73,10 @@ renderGio <- function(expr, env = parent.frame(), quoted = FALSE) {
 gio_style <- function(g, style = "magic"){
   g$x$style <- style
   return(g)
+}
+
+#' @export
+gio_title <- function(g, title){
+  title <- htmltools::h3(title)
+  htmlwidgets::prependContent(g, title)
 }

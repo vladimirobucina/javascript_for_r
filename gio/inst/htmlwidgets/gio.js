@@ -7,25 +7,35 @@ HTMLWidgets.widget({
   factory: function(el, width, height) {
 
     // TODO: define shared variables for this instance
+    var controller;
 
     return {
 
       renderValue: function(x) {
 
-        var controller = new GIO.Controller(el);
+        controller = new GIO.Controller(el); // declared outside
+
+        // add data
         controller.addData(x.data);
 
-        controller.setStyle(x.style); // set style
+        // define style
+        controller.setStyle(x.style);
 
+        if(x.stats)
+          controller.enableStats();
+
+        // render
         controller.init();
 
       },
 
       resize: function(width, height) {
 
-        // TODO: code to re-render the widget with a new size
+        controller.resizeUpdate();
 
-      }
+      },
+
+
 
     };
   }
